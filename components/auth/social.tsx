@@ -1,14 +1,14 @@
 'use client'
 
-// import { signIn } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { Button } from "../ui/button"
 import { BsGoogle } from "react-icons/bs"
 import { DEFAULT_LOGIN_REDIRECT } from "@/route"
 
 
 const Social = () => {
-  const onClick =  (provider: "google" | "github") => {
-    // signIn(provider, { callbackUrl: DEFAULT_LOGIN_REDIRECT })
+  const onClick =  (provider: "google") => {
+    signIn(provider, { callbackUrl: DEFAULT_LOGIN_REDIRECT })
   }
   return (
     <div className="flex w-full items-center  gap-x-2"> 

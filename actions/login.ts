@@ -5,9 +5,9 @@ import { LoginSchema } from "@/schemas";
 import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/route";
 import { AuthError } from "next-auth";
-import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
+// import { generateTwoFactorToken, generateVerificationToken } from "@/lib/token";
 import { getUserByEmail } from "@/data/user";
-import { sendTwoFactorTokenEmail, sendVerificationEmail } from "@/lib/mail";
+// import { sendTwoFactorTokenEmail, sendVerificationEmail } from "@/lib/mail";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationUserId } from "@/data/two-factor-confirmation";
@@ -34,18 +34,18 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Invalid password!" };
   }
 
-  if (!existingUser.emailVerified) {
-    const verificationToken = await generateVerificationToken(
-      existingUser.email
-    );
+  // if (!existingUser.emailVerified) {
+  //   const verificationToken = await generateVerificationToken(
+  //     existingUser.email
+  //   );
 
-    await sendVerificationEmail(
-      verificationToken.email,
-      verificationToken.token
-    );
+  //   await sendVerificationEmail(
+  //     verificationToken.email,
+  //     verificationToken.token
+  //   );
 
-    return { success: "Confirmation email sent!" };
-  }
+  //   return { success: "Confirmation email sent!" };
+  // }
 
   if (existingUser.isTwoFactorEnabled && existingUser.email) {
     if (code) {
@@ -85,9 +85,9 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         },
       });
     } else {
-      const twoFactorToken = await generateTwoFactorToken(existingUser.email);
+      // const twoFactorToken = await generateTwoFactorToken(existingUser.email);
 
-      await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
+      // await sendTwoFactorTokenEmail(twoFactorToken.email, twoFactorToken.token);
       return { twoFactor: true };
     }
   }

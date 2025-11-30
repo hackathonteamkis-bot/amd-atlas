@@ -29,15 +29,15 @@ export const RegisterForm = () => {
   })
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    // setError("");
-    // setSuccess("");
-    // startTransition(() => {
-    //   register(values)
-    //     .then((data) => {
-    //       setError(data.error);
-    //       setSuccess(data.success);
-    //     })
-    // });
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      register(values)
+        .then((data) => {
+          setError(data.error);
+          setSuccess(data.success);
+        })
+    });
   };
 
 
