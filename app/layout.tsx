@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
+import { VapiAssistant } from "@/components/vapi-assistant";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           {children}
+          <VapiAssistant />
         </SessionProvider>
       </body>
     </html>
