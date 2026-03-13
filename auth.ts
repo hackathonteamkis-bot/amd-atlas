@@ -35,7 +35,7 @@ export const {
       if (account?.provider !== "credentials") return true;
 
       if (!user.id) return false;
-      const existinguser = await getUserById(user.id);
+      const existinguser = user as any;
 
       // prevent sign in without email
       if (!existinguser?.emailVerified) return false;
@@ -60,31 +60,43 @@ export const {
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
+
       if (token.role && session.user) {
         session.user.role = token.role as UserRole;
       }
+
       if (session.user) {
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
-      }
-      if (session.user) {
         session.user.name = token.name;
         session.user.email = token.email ?? "";
       }
+
       return session;
     },
 
-    async jwt({ token }) {
-      if (!token.sub) return token;
+    async jwt({ token, user, trigger, session }) {
+      if (user) {
+        token.name = user.name;
+        token.email = user.email;
+        token.role = (user as any).role;
+        token.isTwoFactorEnabled = (user as any).isTwoFactorEnabled;
+      }
 
-      const existingUser = await getUserById(token.sub);
+      if (trigger === "update" && session) {
+        return { ...token, ...session };
+      }
+      
+      if (!token.name && token.sub) {
+        const existingUser = await getUserById(token.sub);
+        
+        if (existingUser) {
+          token.name = existingUser.name;
+          token.email = existingUser.email;
+          token.role = existingUser.role;
+          token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
+        }
+      }
 
-      if (!existingUser) return token;
-
-      token.name = existingUser.name;
-      token.email = existingUser.email;
-      token.role = existingUser.role;
-
-      token.isTwoFactorEnabled = existingUser.isTwoFactorEnabled;
       return token;
     },
   },

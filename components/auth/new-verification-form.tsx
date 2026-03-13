@@ -5,32 +5,32 @@ import { CardWrapper } from "@/components/auth/card-wrapper";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { BeatLoader } from "react-spinners";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
+import { toast } from "sonner";
 
 export const NewVerificationForm = () => {
-  const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
+  const [loading, setLoading] = useState(true);
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
   const onSubmit = useCallback(() => {
-    if (success || error) return;
     if (!token) {
-      setError("Missing Token!");
+      toast.error("Missing Token!");
+      setLoading(false);
       return;
     }
 
     newVerification(token)
       .then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
+        if (data.success) toast.success(data.success);
+        if (data.error) toast.error(data.error);
+        setLoading(false);
       })
       .catch(() => {
-        setError("Something went wrong!");
+        toast.error("Something went wrong!");
+        setLoading(false);
       });
-  }, [token, success, error]);
+  }, [token]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -44,9 +44,12 @@ export const NewVerificationForm = () => {
       backButtonLabel="Back to login"
     >
       <div className="flex items-center w-full justify-center ">
-        {!success && !error && <BeatLoader />}
-        <FormSuccess message={success} />
-        {!success && <FormError message={error} />}
+        {loading && <BeatLoader />}
+        {!loading && (
+          <p className="text-sm text-muted-foreground">
+            Verification process completed. You can now login.
+          </p>
+        )}
       </div>
     </CardWrapper>
   );

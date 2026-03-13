@@ -16,10 +16,11 @@ import { LoginSchema } from "@/schemas";
 import { useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
 import Link from "next/link";
 import { login } from "@/actions/login";
+import { toast } from "sonner";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
   const searchParams = useSearchParams();
@@ -28,9 +29,13 @@ export const LoginForm = () => {
       ? "Email Already use with differnt provide!"
       : "";
   const [showTwoFactor, setShowTwoFactor] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (urlError) {
+      toast.error(urlError);
+    }
+  }, [urlError]);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -40,28 +45,26 @@ export const LoginForm = () => {
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError("");
-    setSuccess("");
     startTransition(() => {
       login(values)
         .then((data) => {
           if (data?.error) {
             form.reset();
-            setError(data.error);
+            toast.error(data.error);
           }
           if (data?.success) {
             form.reset();
-            setSuccess(data.success);
+            router.refresh();
+            toast.success(data.success);
           }
 
           if (data?.twoFactor) {
             setShowTwoFactor(true);
           }
         })
-        .catch(() => {
-          setError("Something went Wrong!");
-        });
     });
   };
 
@@ -144,8 +147,6 @@ export const LoginForm = () => {
               </>
             )}
           </div>
-          <FormError message={error || urlError} />
-          <FormSuccess message={success} />
           <Button
             disabled={isPending}
             onClick={() => {}}

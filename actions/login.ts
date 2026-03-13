@@ -11,7 +11,8 @@ import { sendTwoFactorTokenEmail, sendVerificationEmail } from "@/lib/mail";
 import { getTwoFactorTokenByEmail } from "@/data/two-factor-token";
 import { db } from "@/lib/db";
 import { getTwoFactorConfirmationUserId } from "@/data/two-factor-confirmation";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
+import { revalidatePath } from "next/cache";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
   const validateFields = LoginSchema.safeParse(values);
@@ -92,6 +93,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     }
   }
 
+  revalidatePath("/", "layout");
   try {
     await signIn("credentials", {
       email,

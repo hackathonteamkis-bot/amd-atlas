@@ -1,6 +1,6 @@
 'use client'
 import * as z from 'zod'
-import React, { useState, useTransition } from 'react'
+import React, { useTransition } from 'react'
 import { CardWrapper } from './card-wrapper'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,13 +8,10 @@ import { Form, FormMessage, FormControl, FormField, FormItem, FormLabel } from '
 import { RegisterSchema } from '@/schemas'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { FormError } from '../form-error'
-import { FormSuccess } from '../form-success'
 import { register } from '@/actions/register'
+import { toast } from 'sonner'
 
 export const RegisterForm = () => {
-  const [error, setError] = useState<string | undefined>();
-  const [success, setSuccess] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
@@ -22,25 +19,19 @@ export const RegisterForm = () => {
     defaultValues: {
       email: '',
       password: '',
-      // number:'',
-      // role: undefined,
       name: '',
     }
   })
 
   const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
-    setError("");
-    setSuccess("");
     startTransition(() => {
       register(values)
         .then((data) => {
-          setError(data.error);
-          setSuccess(data.success);
+          if (data.error) toast.error(data.error);
+          if (data.success) toast.success(data.success);
         })
     });
   };
-
-
 
   return (
     <CardWrapper
@@ -75,25 +66,6 @@ export const RegisterForm = () => {
                 </FormItem>
               )}
             />
-            {/* <FormField 
-          control={form.control}
-          name='number'
-          render={({field})=>(
-            <FormItem>
-              <FormLabel>
-                Number
-              </FormLabel>
-              <FormControl>
-              <Input 
-              {...field}
-              disabled={isPending}
-              placeholder='12345678990'
-              />
-              </FormControl>
-              <FormMessage /> 
-            </FormItem>
-          )}
-          /> */}
             <FormField
               control={form.control}
               name='name'
@@ -114,29 +86,6 @@ export const RegisterForm = () => {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name='role'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <select
-                      {...field}
-                      disabled={isPending}
-                      className="form-select" // Add your styling class here
-                    >
-                      <option value="" disabled>
-                        Select a role
-                      </option>
-                      <option value="USER">User</option>
-                      <option value="ADMIN">Admin</option>
-                    </select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
             <FormField
               control={form.control}
               name='password'
@@ -158,8 +107,6 @@ export const RegisterForm = () => {
               )}
             />
           </div>
-          <FormError message={error} />
-          <FormSuccess message={success} />
           <Button
             disabled={isPending}
             onClick={() => { }}
