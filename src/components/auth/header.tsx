@@ -1,10 +1,12 @@
-import React from "react";
+"use client";
+
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const font = Poppins({
   subsets: ["latin"],
   weight: ["600"],
+  display: "swap",
 });
 
 interface HeaderProps {

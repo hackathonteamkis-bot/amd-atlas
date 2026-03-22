@@ -9,25 +9,32 @@ import {
 
 const { auth } = NextAuth(authConfig);
 
-// Static files that should never be processed by auth middleware
-const staticFiles = ["/manifest.json", "/sw.js", "/workbox-4754cb34.js"];
+// Helper to check for static PWA assets
+const isStaticAsset = (path: string) => 
+  path === "/manifest.json" || 
+  path === "/sw.js" || 
+  path.startsWith("/workbox-");
+
+const publicRoutesSet = new Set(publicRoutes);
+const authRoutesSet = new Set(authRoutes);
 
 export default auth((req) => {
   const { nextUrl } = req;
+  const pathname = nextUrl.pathname;
   const isLoggedIn = !!req.auth;
 
   // Skip auth for static PWA files
-  if (staticFiles.includes(nextUrl.pathname)) {
+  if (isStaticAsset(pathname)) {
     return;
   }
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
 
   if (isApiAuthRoute) {
     return;
   }
+
+  const isAuthRoute = authRoutesSet.has(pathname);
 
   if (isAuthRoute) {
     if (isLoggedIn) {
@@ -36,7 +43,7 @@ export default auth((req) => {
     return;
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
+  if (!isLoggedIn && !publicRoutesSet.has(pathname)) {
     return Response.redirect(new URL("/auth/login", nextUrl));
   }
 

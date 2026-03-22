@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react"
 import { Button } from "../ui/button"
-import { BsGoogle } from "react-icons/bs"
+import { FcGoogle } from "react-icons/fc"
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes"
 
 
@@ -18,7 +18,7 @@ const Social = () => {
     onClick={() => onClick("google")}
     variant='outline'
     >
-      <BsGoogle className="h-5 w-5" />
+      <FcGoogle className="h-5 w-5" />
     </Button>
     </div>
   )

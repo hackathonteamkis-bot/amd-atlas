@@ -6,9 +6,11 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { lazy, Suspense } from "react";
 import BackButton from "./back-button";
 import Header from "./header";
-import Social from "./social";
+
+const Social = lazy(() => import("./social"));
 
 interface CardWrapperProps {
   children: React.ReactNode;
@@ -33,7 +35,9 @@ export const CardWrapper = ({
       <CardContent>{children}</CardContent>
       {showSocial && (
         <CardFooter>
-          <Social />
+          <Suspense fallback={<div className="w-full h-10 animate-pulse bg-muted rounded-md" />}>
+            <Social />
+          </Suspense>
         </CardFooter>
       )}
       <CardFooter>

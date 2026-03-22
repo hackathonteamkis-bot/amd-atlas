@@ -26,7 +26,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   const existingUser = await getUserByEmail(email);
 
   if (!existingUser || !existingUser.email || !existingUser.password) {
-    return { error: "Email does not exist!" }; // Fixed typo in error message
+    return { error: "Email does not exist!" }; 
   }
 
   // Check password before proceeding with 2FA or login
@@ -56,7 +56,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
         return { error: "Invalid Code" };
       }
       if (twoFactorToken.token !== code) {
-        return { error: "Invalid Code" }; // Fixed extra space in error message
+        return { error: "Invalid Code" }; 
       }
       const hasExpired = new Date(twoFactorToken.expires) < new Date();
       if (hasExpired) {
