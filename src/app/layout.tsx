@@ -1,35 +1,92 @@
 import React from "react";
 import type { Metadata, Viewport } from "next";
-import { Poppins } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/auth";
 import { Toaster } from "@/components/ui/sonner";
 
-const poppins = Poppins({
+const jakarta = Plus_Jakarta_Sans({
+  variable: "--font-jakarta",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
   display: "swap",
-  preload: true,
 });
 
+const roslindale = localFont({
+  src: "../../public/roslindale/Roslindale-TextItalic-Testing.ttf",
+  variable: "--font-roslindale",
+  weight: "400",
+  style: "italic",
+  display: "swap",
+});
+
+// Site configuration
+const siteConfig = {
+  name: "Nourish",
+  description:
+    "The first context-aware nutrition assistant that predicts your energy needs and intercepts poor choices before they happen.",
+  url: "https://nourish.ai",
+  ogImage: "/logo/nourish-og.png",
+  keywords: [
+    "nutrition assistant",
+    "AI health",
+    "calorie counting",
+    "personalized nutrition",
+    "bio-sync",
+    "health tech",
+    "wearable sync",
+    "energy management",
+    "smart food choices",
+    "AI dietitian",
+  ],
+  creator: "Nourish Team",
+  authors: [{ name: "Nourish Health" }],
+};
+
 export const viewport: Viewport = {
-  themeColor: "#7dd3fc",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#1e293b" },
+  ],
 };
 
 export const metadata: Metadata = {
-  manifest: "/manifest.json",
   title: {
-    default: "Auth App",
-    template: "%s | Auth App",
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
   },
-  description: "Secure authentication service with 2FA, OAuth, and more.",
-  keywords: ["authentication", "login", "register", "2FA", "OAuth", "security"],
-  robots: {
-    index: true,
-    follow: true,
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: siteConfig.authors,
+  creator: siteConfig.creator,
+  publisher: siteConfig.name,
+  manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/nourish-logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/nourish-logo.svg", sizes: "180x180", type: "image/svg+xml" }],
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [
+      {
+        url: `${siteConfig.url}${siteConfig.ogImage}`,
+        width: 1200,
+        height: 630,
+        alt: "Nourish - AI-driven health and nutrition assistant",
+      },
+    ],
   },
 };
 
@@ -46,7 +103,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://accounts.google.com" crossOrigin="anonymous" />
       </head>
       <body
-        className={`${poppins.className} antialiased`}
+        className={`${jakarta.variable} ${roslindale.variable} antialiased relative font-sans`}
         suppressHydrationWarning
       >
         <SessionProvider session={session}>
@@ -57,3 +114,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

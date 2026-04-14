@@ -1,0 +1,16 @@
+# Robots.txt for The Founder's Thesis
+# https://thefoundersthesis.com
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://thefoundersthesis.com/sitemap.xml
+
+# Disallow sensitive paths (if any in the future)
+# Disallow: /api/
+# Disallow: /admin/
+
+# Crawl delay (optional, helps with server load)
+Crawl-delay: 1

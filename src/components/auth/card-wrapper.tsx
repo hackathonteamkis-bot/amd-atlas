@@ -28,14 +28,19 @@ export const CardWrapper = ({
   showSocial,
 }: CardWrapperProps) => {
   return (
-    <Card className="w-[400px] shadow-md">
+    <Card className="w-full max-w-[450px] glass shadow-premium border-white/40 rounded-[2.5rem] p-4">
       <CardHeader>
         <Header label={headerLabel} />
       </CardHeader>
       <CardContent>{children}</CardContent>
       {showSocial && (
-        <CardFooter>
-          <Suspense fallback={<div className="w-full h-10 animate-pulse bg-muted rounded-md" />}>
+        <CardFooter className="flex-col gap-y-4">
+          <div className="flex items-center w-full gap-2 opacity-20">
+             <div className="h-px bg-brand-charcoal flex-1" />
+             <span className="text-[10px] font-bold uppercase tracking-widest">Or Continue With</span>
+             <div className="h-px bg-brand-charcoal flex-1" />
+          </div>
+          <Suspense fallback={<div className="w-full h-12 animate-pulse bg-brand-charcoal/5 rounded-2xl" />}>
             <Social />
           </Suspense>
         </CardFooter>

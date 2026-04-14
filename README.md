@@ -1,17 +1,1 @@
-
-DATABASE_URL=
-AUTH_SECRET=
-DIRECT_URL=
-
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-
-AUTH_SECRET=demoauthsecret
-
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=
-SMTP_PASS=
-SMTP_FROM=
-
-#supabase pass : XJYrcTbHPwRKr9HG
+Design a smart solution that helps individual makle better foob choices and build healtheri eating habits by leveragin the available data, user behavour or context inputs
