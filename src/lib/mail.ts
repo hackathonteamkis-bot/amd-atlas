@@ -32,7 +32,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   });
 };
 
-export const sendPasswordResentEmail = async (email: string, token: string) => {
+export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${APP_URL}/auth/new-password?token=${token}`;
 
   await getTransporter().sendMail({
