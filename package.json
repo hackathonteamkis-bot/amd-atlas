@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "gcp-build": "npx prisma generate && npx next build --webpack",
-    "start": "next start",
+    "start": "next start -p ${PORT:-3000}",
     "lint": "eslint"
   },
   "dependencies": {
