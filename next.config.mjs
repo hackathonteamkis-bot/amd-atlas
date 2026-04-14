@@ -14,6 +14,7 @@ const pwaConfig = withPWA({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactCompiler: true,
   turbopack: {},
   poweredByHeader: false,
