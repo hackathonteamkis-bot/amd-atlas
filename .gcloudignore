@@ -1,0 +1,43 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Files to exclude from App Engine deployment
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Git
+.git
+.gitignore
+
+# Dependencies (rebuilt on App Engine)
+node_modules/
+
+# Build output (rebuilt on App Engine)
+.next/
+
+# Local env files (secrets set via gcloud CLI)
+.env
+.env.local
+.env.production
+.env*.local
+
+# Docker files (not needed for App Engine)
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# CI/CD
+cloudbuild.yaml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dev/test
+coverage/
+*.md
+LICENSE
+
+# Gemini
+.gemini/

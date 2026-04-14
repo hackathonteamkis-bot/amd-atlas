@@ -1,0 +1,46 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Google App Engine — Nourish App
+# ─────────────────────────────────────────────────────────────────────────────
+# Deploy: gcloud app deploy
+# No Docker needed — App Engine handles the runtime.
+# ─────────────────────────────────────────────────────────────────────────────
+
+runtime: nodejs20
+env: standard
+instance_class: F2
+
+# Build & start commands
+build_env_variables:
+  NEXT_TELEMETRY_DISABLED: "1"
+  NODE_ENV: "production"
+
+# Auto-scaling configuration
+automatic_scaling:
+  min_instances: 0
+  max_instances: 5
+  target_cpu_utilization: 0.65
+  min_pending_latency: 30ms
+  max_pending_latency: automatic
+  max_concurrent_requests: 80
+
+# Environment variables (non-secret defaults)
+env_variables:
+  NODE_ENV: "production"
+  NEXT_TELEMETRY_DISABLED: "1"
+  PORT: "8080"
+
+# Route all traffic through the app
+handlers:
+  - url: /.*
+    script: auto
+    secure: always
+
+# Health check
+liveness_check:
+  path: /api/health
+  check_interval_sec: 30
+
+readiness_check:
+  path: /api/health
+  check_interval_sec: 5
+  app_start_timeout_sec: 300

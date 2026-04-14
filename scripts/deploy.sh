@@ -1,26 +1,18 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────────────
-# Manual Deploy Script — Build & Deploy to Cloud Run
+# Deploy to Google App Engine (no Docker needed)
 # ─────────────────────────────────────────────────────────────────────────────
-# Usage: ./scripts/deploy.sh [--project <PROJECT_ID>] [--region <REGION>]
-#
-# Builds the Docker image using Cloud Build and deploys to Cloud Run
-# with secrets injected from Secret Manager.
+# Usage: ./scripts/deploy.sh [--project <PROJECT_ID>]
 # ─────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
 
-# ── Defaults ──
-REGION="asia-south1"
-SERVICE_NAME="nourish-app"
-REPOSITORY="nourish-repo"
 PROJECT_ID=""
 
-# ── Parse arguments ──
+# Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
     --project) PROJECT_ID="$2"; shift 2 ;;
-    --region)  REGION="$2"; shift 2 ;;
     *)         echo "Unknown option: $1"; exit 1 ;;
   esac
 done
@@ -35,49 +27,30 @@ if [[ -z "${PROJECT_ID}" ]]; then
   exit 1
 fi
 
-IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPOSITORY}/${SERVICE_NAME}"
-TAG=$(git rev-parse --short HEAD 2>/dev/null || echo "manual")
-
 echo ""
 echo "╔══════════════════════════════════════════════════════════════╗"
-echo "║           Nourish — Cloud Run Deployment                    ║"
+echo "║           Nourish — App Engine Deployment                   ║"
 echo "╠══════════════════════════════════════════════════════════════╣"
 echo "║  Project:  ${PROJECT_ID}"
-echo "║  Region:   ${REGION}"
-echo "║  Image:    ${IMAGE}:${TAG}"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo ""
 
-# ── Step 1: Submit build to Cloud Build ──
-echo "▸ Submitting build to Cloud Build..."
-gcloud builds submit \
-  --config=cloudbuild.yaml \
-  --substitutions="_REGION=${REGION},_SERVICE_NAME=${SERVICE_NAME},_REPOSITORY=${REPOSITORY},SHORT_SHA=${TAG}" \
+# Deploy to App Engine
+echo "▸ Deploying to App Engine..."
+gcloud app deploy app.yaml \
   --project="${PROJECT_ID}" \
-  .
+  --quiet \
+  --promote
 
-echo ""
-echo "▸ Updating Cloud Run service with secrets..."
-
-# ── Step 2: Update service with Secret Manager references ──
-gcloud run services update "${SERVICE_NAME}" \
-  --region="${REGION}" \
-  --project="${PROJECT_ID}" \
-  --update-secrets="DATABASE_URL=DATABASE_URL:latest,DIRECT_URL=DIRECT_URL:latest,AUTH_SECRET=AUTH_SECRET:latest,SMTP_HOST=SMTP_HOST:latest,SMTP_PORT=SMTP_PORT:latest,SMTP_USER=SMTP_USER:latest,SMTP_PASS=SMTP_PASS:latest,SMTP_FROM=SMTP_FROM:latest"
-
-# ── Step 3: Get service URL ──
-SERVICE_URL=$(gcloud run services describe "${SERVICE_NAME}" \
-  --region="${REGION}" \
-  --project="${PROJECT_ID}" \
-  --format='value(status.url)')
-
+# Get the URL
 echo ""
 echo "════════════════════════════════════════════════════════════════"
 echo "  ✓ Deployment complete!"
 echo ""
-echo "  Service URL: ${SERVICE_URL}"
+echo "  App URL: https://${PROJECT_ID}.appspot.com"
 echo ""
 echo "  Useful commands:"
-echo "    gcloud run services describe ${SERVICE_NAME} --region=${REGION}"
-echo "    gcloud run services logs read ${SERVICE_NAME} --region=${REGION}"
+echo "    gcloud app browse --project=${PROJECT_ID}"
+echo "    gcloud app logs tail --project=${PROJECT_ID}"
+echo "    gcloud app describe --project=${PROJECT_ID}"
 echo "════════════════════════════════════════════════════════════════"
