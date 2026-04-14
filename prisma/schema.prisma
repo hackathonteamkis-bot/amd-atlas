@@ -9,8 +9,6 @@ generator client {
 enum UserRole {
   ADMIN
   USER
-  STARTUP_FOUNDER
-  INCUBATOR
 }
 
 model User {
@@ -24,6 +22,8 @@ model User {
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  bioMetric             BioMetric?
+  calendarEvents        CalendarEvent[]
 }
 
 model Account {
@@ -79,4 +79,37 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model BioMetric {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fuelLevel      Int      @default(84)
+  sleepHours     Float    @default(7.2)
+  sleepStatus    String   @default("Optimal")
+  stressLevel    String   @default("Moderate")
+  stressStatus   String   @default("Trending High")
+  recoveryStatus String   @default("Active")
+  recoveryDesc   String   @default("+12% vs avg")
+  
+  updatedAt      DateTime @updatedAt
+}
+
+model CalendarEvent {
+  id             String   @id @default(cuid())
+  userId         String   
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String
+  timeUntil      String
+  description    String
+  recommendation String
+}
+
+model MealOption {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  tags        String[]
+  tagColors   String[] // Corresponding colors for tags
 }

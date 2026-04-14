@@ -26,11 +26,10 @@
   --color-amber: #FFB300;
   --color-cream: #F8FAF9;
   --color-navy: #000000;
-  --color-forest: #008A45;
-  --color-brand-green: #008A45;
   --color-brand-charcoal: #000000;
   --color-brand-amber: #FFB300;
   --color-brand-cream: #F8FAF9;
+  --color-brand-green: #008A45;
   
   --font-sans: var(--font-jakarta);
   --font-serif: var(--font-jakarta);

@@ -14,12 +14,21 @@ const pwaConfig = withPWA({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   reactCompiler: true,
   turbopack: {},
   poweredByHeader: false,
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
   experimental: {
     optimizeCss: true,

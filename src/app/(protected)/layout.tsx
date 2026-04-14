@@ -6,7 +6,7 @@ export default async function ProtectedLayout({
   children,
 }: ProtectedLayoutProps) {
   return (
-    <div className="h-full bg-sky-300">
+    <div className="h-full">
       {children}
     </div>
   );
