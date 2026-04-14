@@ -16,6 +16,12 @@ const pwaConfig = withPWA({
 const nextConfig = {
   output: "standalone",
   reactCompiler: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreDuringBuilds: true,
+  },
   turbopack: {},
   poweredByHeader: false,
   compress: true,

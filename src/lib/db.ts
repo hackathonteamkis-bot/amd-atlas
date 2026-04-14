@@ -11,10 +11,9 @@ const connectionString = process.env.DATABASE_URL;
 
 const pool = globalThis.pgPool || new Pool({ 
   connectionString,
-  max: 10,
+  max: 20, // Increased for concurrent Cloud Run requests
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-  statement_timeout: 10000,
+  connectionTimeoutMillis: 10000,
   allowExitOnIdle: true,
 });
 if (process.env.NODE_ENV !== "production") globalThis.pgPool = pool;
